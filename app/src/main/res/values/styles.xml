@@ -1,0 +1,27 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+     <style name="dateText">
+         <item name="android:layout_weight">1</item>
+         <item name="android:layout_width">match_parent</item>
+         <item name="android:layout_height">wrap_content</item>
+         <item name="android:textStyle">bold</item>
+         <item name="android:textSize">@dimen/text_date</item>
+     </style>
+    <style name="dateSpinner">
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+        <style name="paddingSpinner">
+            <item name="android:paddingTop">@dimen/top_spinner_padding</item>
+            <item name="android:paddingLeft">@dimen/left_spinner_padding</item>
+            <item name="android:paddingRight">@dimen/right_spinner_padding</item>
+        </style>
+</resources>

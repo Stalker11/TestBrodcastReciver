@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activities.MainActivity">
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onClick1"
+        android:text="@string/button1"></Button>
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onClick2"
+        android:text="@string/button2"></Button>
+
+    <LinearLayout
+        style="@style/paddingSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            style="@style/dateText"
+            android:text="@string/day" />
+
+        <TextView
+            style="@style/dateText"
+            android:text="@string/month" />
+
+        <TextView
+            style="@style/dateText"
+            android:text="@string/year" />
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/paddingSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Spinner
+            android:id="@+id/day_spinner"
+            style="@style/dateSpinner"></Spinner>
+
+        <Spinner
+            android:id="@+id/month_spinner"
+            style="@style/dateSpinner"></Spinner>
+
+        <Spinner
+            android:id="@+id/year_spinner"
+            style="@style/dateSpinner"></Spinner>
+    </LinearLayout>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <TextView
+        style="@style/dateText"
+        android:text="@string/hour" />
+
+    <TextView
+        style="@style/dateText"
+        android:text="@string/seconds" />
+
+    <TextView
+        style="@style/dateText"
+        android:text="@string/time_format" />
+</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Spinner
+            android:id="@+id/hour_spinner"
+            style="@style/dateSpinner"></Spinner>
+
+        <Spinner
+            android:id="@+id/seconds_spinner"
+            style="@style/dateSpinner"></Spinner>
+
+        <Spinner
+            android:id="@+id/format_spinner"
+            style="@style/dateSpinner"></Spinner>
+    </LinearLayout>
+    <EditText
+        android:id="@+id/enter_remind"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/edit_min_size"
+        android:hint="@string/edit_hint" />
+
+    <Button
+        android:id="@+id/enter_remind_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/enter_button" />
+</LinearLayout>
