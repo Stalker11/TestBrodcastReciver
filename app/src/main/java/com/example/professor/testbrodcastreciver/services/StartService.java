@@ -7,10 +7,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
 import com.example.professor.testbrodcastreciver.R;
+import com.example.professor.testbrodcastreciver.activities.StartActivity;
 import com.example.professor.testbrodcastreciver.receivers.Receiver;
 
 public class StartService extends Service {
@@ -49,6 +51,17 @@ public class StartService extends Service {
         builder.setSmallIcon(R.mipmap.ic_launcher);
         builder.addAction(new NotificationCompat.Action(R.mipmap.ic_launcher
                 , "Hello my friend", pIntent));
+        Intent resultIntent = new Intent(this, StartActivity.class);
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addParentStack(StartActivity.class);
+
+  /* Adds the Intent that starts the Activity to the top of the stack */
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0, PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(resultPendingIntent);
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(id, builder.build());
     }

@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:onClick="onClick2"
         android:text="@string/button2"></Button>
-
+<!--
     <LinearLayout
         style="@style/paddingSpinner"
         android:layout_width="match_parent"
@@ -85,7 +85,7 @@
         <Spinner
             android:id="@+id/format_spinner"
             style="@style/dateSpinner"></Spinner>
-    </LinearLayout>
+    </LinearLayout>-->
     <EditText
         android:id="@+id/enter_remind"
         android:layout_width="match_parent"
@@ -96,5 +96,6 @@
         android:id="@+id/enter_remind_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:onClick="setDate"
         android:text="@string/enter_button" />
 </LinearLayout>
