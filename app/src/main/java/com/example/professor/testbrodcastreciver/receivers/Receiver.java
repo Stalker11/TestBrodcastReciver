@@ -12,12 +12,13 @@ import com.example.professor.testbrodcastreciver.services.StartService;
 public class Receiver extends BroadcastReceiver {
     public static final String TAG = Receiver.class.getSimpleName();
     private NotificationManager manager;
+
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d(TAG, "onReceive");
         Log.d(TAG, "action = " + intent.getAction());
         Log.d(TAG, "extra = " + intent.getStringExtra("extra"));
-        context.stopService(new Intent(context,StartService.class));
+        context.stopService(new Intent(context, StartService.class));
         manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         manager.cancel(1);
 
