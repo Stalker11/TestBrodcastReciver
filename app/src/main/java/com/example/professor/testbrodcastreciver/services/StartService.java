@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
+import android.service.notification.StatusBarNotification;
 import android.support.annotation.Nullable;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.NotificationCompat;
@@ -15,14 +16,24 @@ import android.util.Log;
 
 import com.example.professor.testbrodcastreciver.R;
 import com.example.professor.testbrodcastreciver.activities.StartActivity;
+import com.example.professor.testbrodcastreciver.database.SaveLoadReminders;
+import com.example.professor.testbrodcastreciver.models.Reminder;
 import com.example.professor.testbrodcastreciver.receivers.Receiver;
 import com.example.professor.testbrodcastreciver.util.BaseApplication;
+import com.example.professor.testbrodcastreciver.util.ProgectConstans;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 public class StartService extends Service {
     public static final String TAG = StartService.class.getSimpleName();
     private Intent intent1;
     private PendingIntent pIntent1;
     private NotificationManager notificationManager;
+    private Calendar cal;
+    private Date today;
 
     @Nullable
     @Override
@@ -34,15 +45,16 @@ public class StartService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        cal = Calendar.getInstance();
+        today = cal.getTime();
         intent1 = new Intent(this, Receiver.class);
         intent1.putExtra("25", "Hello");
-        intent1.putExtra("880", "Oleg");
+        intent1.putExtra("close", notificationId());
         intent1.setAction("Hello");
         pIntent1 = PendingIntent.getBroadcast(this, 0, intent1, 0);
 
         Log.d(TAG, "onClick1: " + 100);
-        sendNotif(1, pIntent1);
+        sendNotif(notificationId(), pIntent1);
         Log.d(TAG, "onCreate: ");
     }
 
@@ -55,6 +67,7 @@ public class StartService extends Service {
         builder.setTicker("New Message Alert!");
         builder.setSmallIcon(R.mipmap.ic_launcher);
         builder.addAction(createMessage());
+        builder.setPriority(1);
         Intent resultIntent = new Intent(this, StartActivity.class);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
@@ -77,7 +90,17 @@ public class StartService extends Service {
     }
 
     private NotificationCompat.Action createMessage() {
-        String message = BaseApplication.sPref.getString("key", "no message");
-        return new NotificationCompat.Action(R.mipmap.ic_launcher, message, pIntent1);
+
+        String date = new SimpleDateFormat(ProgectConstans.DATE_FORMAT).format(today);
+      //  String message = BaseApplication.sPref.getString("key", "no message");
+        List<Reminder> reminders = SaveLoadReminders.searchBy(date,ProgectConstans.TEST_STRING);
+        Log.d(TAG, "createMessage: "+date+"  "+reminders.get(0));
+        return new NotificationCompat.Action(R.mipmap.ic_launcher, reminders.get(0).getReminder(), pIntent1);
+    }
+    private int notificationId(){
+        String date = new SimpleDateFormat(ProgectConstans.DATE_FORMAT).format(today);
+        List<Reminder> reminders = SaveLoadReminders.searchBy(date,ProgectConstans.TEST_STRING);
+        Log.d(TAG, "notificationId: "+reminders.get(0).getId());
+        return reminders.get(0).getId();
     }
 }

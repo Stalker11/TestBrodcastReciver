@@ -17,10 +17,10 @@ public class Receiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Log.d(TAG, "onReceive");
         Log.d(TAG, "action = " + intent.getAction());
-        Log.d(TAG, "extra = " + intent.getStringExtra("extra"));
+        Log.d(TAG, "onReceive " + intent.getIntExtra("close",0));
         context.stopService(new Intent(context, StartService.class));
         manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.cancel(1);
+        manager.cancel(intent.getIntExtra("close",0));
 
     }
 
