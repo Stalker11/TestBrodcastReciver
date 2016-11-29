@@ -39,6 +39,12 @@ public class HelperDataBase extends OrmLiteSqliteOpenHelper {
     public Dao<Reminder, Long> getDao() throws SQLException {
         if (reminder == null) {
             reminder = getDao(Reminder.class);
+            reminder.registerObserver(new Dao.DaoObserver() {
+                @Override
+                public void onChange() {
+                    Log.d(TAG, "onChange: ");
+                }
+            });
         }
         return reminder;
     }

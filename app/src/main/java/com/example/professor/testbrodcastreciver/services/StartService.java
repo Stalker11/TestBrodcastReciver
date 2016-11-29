@@ -1,14 +1,12 @@
 package com.example.professor.testbrodcastreciver.services;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.IBinder;
-import android.service.notification.StatusBarNotification;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.NotificationCompat;
@@ -19,21 +17,22 @@ import com.example.professor.testbrodcastreciver.activities.StartActivity;
 import com.example.professor.testbrodcastreciver.database.SaveLoadReminders;
 import com.example.professor.testbrodcastreciver.models.Reminder;
 import com.example.professor.testbrodcastreciver.receivers.Receiver;
-import com.example.professor.testbrodcastreciver.util.BaseApplication;
 import com.example.professor.testbrodcastreciver.util.ProgectConstans;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 public class StartService extends Service {
     public static final String TAG = StartService.class.getSimpleName();
-    private Intent intent1;
+    private Intent startBrodcastIntent;
     private PendingIntent pIntent1;
     private NotificationManager notificationManager;
     private Calendar cal;
     private Date today;
+    private List<Reminder> reminders;
 
     @Nullable
     @Override
@@ -47,14 +46,22 @@ public class StartService extends Service {
         super.onCreate();
         cal = Calendar.getInstance();
         today = cal.getTime();
-        intent1 = new Intent(this, Receiver.class);
-        intent1.putExtra("25", "Hello");
-        intent1.putExtra("close", notificationId());
-        intent1.setAction("Hello");
-        pIntent1 = PendingIntent.getBroadcast(this, 0, intent1, 0);
+        setReminders();
+        Integer a = 100;
+        startBrodcastIntent = new Intent(this, Receiver.class);
+       // startBrodcastIntent.setAction(Intent.ACTION_SEND);
+        startBrodcastIntent.putExtra("hello",100); // если PendingIntent имеет одинаковый флаг, то интент изменен не будетhttp://elenergi.ru/
+      //  startBrodcastIntent.putExtra("25", "100");
+       // startBrodcastIntent.putParcelableArrayListExtra("test",(ArrayList) reminders);
+
+//        Log.d(TAG, "onCreate: "+reminders.get(0).getId());
+       // startBrodcastIntent.setAction("Hello");
+
+        pIntent1 = PendingIntent.getBroadcast(this, reminders.get(0).getId(), startBrodcastIntent, 0);
+
 
         Log.d(TAG, "onClick1: " + 100);
-        sendNotif(notificationId(), pIntent1);
+        sendNotif(100, pIntent1);
         Log.d(TAG, "onCreate: ");
     }
 
@@ -81,6 +88,7 @@ public class StartService extends Service {
         builder.setContentIntent(resultPendingIntent);
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(id, builder.build());
+
     }
 
     @Override
@@ -91,16 +99,16 @@ public class StartService extends Service {
 
     private NotificationCompat.Action createMessage() {
 
-        String date = new SimpleDateFormat(ProgectConstans.DATE_FORMAT).format(today);
+      //  String date = new SimpleDateFormat(ProgectConstans.DATE_FORMAT).format(today);
       //  String message = BaseApplication.sPref.getString("key", "no message");
-        List<Reminder> reminders = SaveLoadReminders.searchBy(date,ProgectConstans.TEST_STRING);
-        Log.d(TAG, "createMessage: "+date+"  "+reminders.get(0));
+      /*  List<Reminder> reminders = SaveLoadReminders.searchBy(date,ProgectConstans.TEST_STRING);
+        Log.d(TAG, "createMessage: "+date+"  "+reminders.get(0));*/
         return new NotificationCompat.Action(R.mipmap.ic_launcher, reminders.get(0).getReminder(), pIntent1);
     }
-    private int notificationId(){
+    private void setReminders(){
         String date = new SimpleDateFormat(ProgectConstans.DATE_FORMAT).format(today);
-        List<Reminder> reminders = SaveLoadReminders.searchBy(date,ProgectConstans.TEST_STRING);
-        Log.d(TAG, "notificationId: "+reminders.get(0).getId());
-        return reminders.get(0).getId();
+        reminders = SaveLoadReminders.searchBy(date,ProgectConstans.TEST_STRING);
+        Log.d(TAG, "notificationId: "+reminders.size());
+
     }
 }

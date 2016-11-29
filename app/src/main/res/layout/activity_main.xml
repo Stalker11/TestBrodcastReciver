@@ -7,19 +7,6 @@
     android:orientation="vertical"
     tools:context=".activities.MainActivity">
 
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="onClick1"
-        android:text="@string/button1"></Button>
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="onClick2"
-        android:text="@string/button2"></Button>
     <EditText
         android:id="@+id/enter_remind"
         android:layout_width="match_parent"
