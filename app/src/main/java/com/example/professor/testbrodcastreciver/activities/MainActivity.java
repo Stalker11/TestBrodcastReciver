@@ -1,14 +1,22 @@
 package com.example.professor.testbrodcastreciver.activities;
 
 import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.icu.util.ValueIterator;
+import android.media.AudioManager;
+import android.media.RemoteControlClient;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 import android.util.Xml;
 import android.view.View;
@@ -18,6 +26,7 @@ import com.example.professor.testbrodcastreciver.database.HelperFactory;
 import com.example.professor.testbrodcastreciver.database.SaveLoadReminders;
 import com.example.professor.testbrodcastreciver.dialogs.SetReminder;
 import com.example.professor.testbrodcastreciver.models.Reminder;
+import com.example.professor.testbrodcastreciver.receivers.Receiver;
 import com.example.professor.testbrodcastreciver.services.StartService;
 import com.example.professor.testbrodcastreciver.util.ProgectConstans;
 import com.example.professor.testbrodcastreciver.util.SaveMessage;
@@ -55,13 +64,13 @@ public class MainActivity extends AppCompatActivity implements SaveMessage {
     private List<Reminder> reminders;
     private final String ns = null;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setDate = new SetDate();
-
-    }
+            }
 
     public void setDate(View v) {
         SetReminder.createDialog(this, setDate);// new SetReminderDate(setDate,this);
@@ -69,9 +78,11 @@ public class MainActivity extends AppCompatActivity implements SaveMessage {
 
     private void setAlarmManager(Calendar calendar) {
         am = (AlarmManager) this.getSystemService(ALARM_SERVICE);
+        Intent intent = new Intent(MainActivity.this, StartService.class);
+        intent.putExtra("test",getReminderId(calendar));
         am.set(AlarmManager.RTC, calendar.getTimeInMillis()
                 , PendingIntent.getService(MainActivity.this, getReminderId(calendar)
-                        , new Intent(MainActivity.this, StartService.class), 0));
+                        , intent, 0));
     }
 
     private void setRemind(String message) {          //test method
@@ -116,5 +127,6 @@ public class MainActivity extends AppCompatActivity implements SaveMessage {
         Log.d(TAG, "notificationId: "+reminders.size());
         return reminders.get(0).getId();
     }
+    // Try to add media in app
 
 }

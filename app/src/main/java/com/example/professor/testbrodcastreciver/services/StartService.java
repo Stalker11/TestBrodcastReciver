@@ -1,10 +1,14 @@
 package com.example.professor.testbrodcastreciver.services;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.IBinder;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
@@ -33,6 +37,8 @@ public class StartService extends Service {
     private Calendar cal;
     private Date today;
     private List<Reminder> reminders;
+    private Ringtone r;
+    private  Uri uri;
 
     @Nullable
     @Override
@@ -47,25 +53,21 @@ public class StartService extends Service {
         cal = Calendar.getInstance();
         today = cal.getTime();
         setReminders();
-        Integer a = 100;
         startBrodcastIntent = new Intent(this, Receiver.class);
+        uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
        // startBrodcastIntent.setAction(Intent.ACTION_SEND);
-        startBrodcastIntent.putExtra("hello",100); // если PendingIntent имеет одинаковый флаг, то интент изменен не будетhttp://elenergi.ru/
-      //  startBrodcastIntent.putExtra("25", "100");
-       // startBrodcastIntent.putParcelableArrayListExtra("test",(ArrayList) reminders);
-
-//        Log.d(TAG, "onCreate: "+reminders.get(0).getId());
-       // startBrodcastIntent.setAction("Hello");
+        startBrodcastIntent.putExtra("hello",reminders.get(0).getId()); // если PendingIntent имеет одинаковый флаг, то интент изменен не будетhttp://elenergi.ru/
+        Log.d(TAG, "onCreate: "+10010);
 
         pIntent1 = PendingIntent.getBroadcast(this, reminders.get(0).getId(), startBrodcastIntent, 0);
 
-
         Log.d(TAG, "onClick1: " + 100);
-        sendNotif(100, pIntent1);
+        sendNotif(reminders.get(0).getId());
         Log.d(TAG, "onCreate: ");
-    }
 
-    void sendNotif(int id, PendingIntent pIntent) {
+    }
+//https://www.youtube.com/watch?v=ocm8sg8eTpM
+    void sendNotif(int id) {
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this);
         builder.setAutoCancel(true);
@@ -76,15 +78,17 @@ public class StartService extends Service {
         builder.addAction(createMessage());
         builder.setPriority(1);
         Intent resultIntent = new Intent(this, StartActivity.class);
-
+        Notification notif = builder.build();
+        notif.defaults = Notification.DEFAULT_SOUND;
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addParentStack(StartActivity.class);
-
+        r = RingtoneManager.getRingtone(getBaseContext(), uri);
+        r.play();
   /* Adds the Intent that starts the Activity to the top of the stack */
         stackBuilder.addNextIntent(resultIntent);
         PendingIntent resultPendingIntent =
                 stackBuilder.getPendingIntent(
-                        0, PendingIntent.FLAG_UPDATE_CURRENT);
+                        reminders.get(0).getId(), PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(resultPendingIntent);
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(id, builder.build());
@@ -95,6 +99,7 @@ public class StartService extends Service {
     public void onDestroy() {
         Log.d(TAG, "onDestroy: ");
         super.onDestroy();
+        r.stop();
     }
 
     private NotificationCompat.Action createMessage() {
