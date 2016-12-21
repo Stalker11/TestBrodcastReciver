@@ -49,6 +49,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -64,12 +66,23 @@ public class MainActivity extends AppCompatActivity implements SaveMessage {
     private List<Reminder> reminders;
     private final String ns = null;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setDate = new SetDate();
+        Log.d(TAG, "onCreate: create");
+
+        /*final Timer time = new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                Log.d(TAG, "onCreate: set");
+                time.cancel();
+            }
+        };
+        time.scheduleAtFixedRate(task,5000,5000);
+*/
             }
 
     public void setDate(View v) {
@@ -78,10 +91,10 @@ public class MainActivity extends AppCompatActivity implements SaveMessage {
 
     private void setAlarmManager(Calendar calendar) {
         am = (AlarmManager) this.getSystemService(ALARM_SERVICE);
-        Intent intent = new Intent(MainActivity.this, StartService.class);
+        Intent intent = new Intent(MainActivity.this, Receiver.class);
         intent.putExtra("test",getReminderId(calendar));
         am.set(AlarmManager.RTC, calendar.getTimeInMillis()
-                , PendingIntent.getService(MainActivity.this, getReminderId(calendar)
+                , PendingIntent.getBroadcast(MainActivity.this, getReminderId(calendar)
                         , intent, 0));
     }
 

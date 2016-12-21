@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class StartService extends Service {
     public static final String TAG = StartService.class.getSimpleName();
@@ -38,7 +40,7 @@ public class StartService extends Service {
     private Date today;
     private List<Reminder> reminders;
     private Ringtone r;
-    private  Uri uri;
+    private Uri uri;
 
     @Nullable
     @Override
@@ -55,9 +57,9 @@ public class StartService extends Service {
         setReminders();
         startBrodcastIntent = new Intent(this, Receiver.class);
         uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-       // startBrodcastIntent.setAction(Intent.ACTION_SEND);
-        startBrodcastIntent.putExtra("hello",reminders.get(0).getId()); // если PendingIntent имеет одинаковый флаг, то интент изменен не будетhttp://elenergi.ru/
-        Log.d(TAG, "onCreate: "+10010);
+        // startBrodcastIntent.setAction(Intent.ACTION_SEND);
+        startBrodcastIntent.putExtra("hello", reminders.get(0).getId()); // если PendingIntent имеет одинаковый флаг, то интент изменен не будетhttp://elenergi.ru/
+        Log.d(TAG, "onCreate: " + 10010);
 
         pIntent1 = PendingIntent.getBroadcast(this, reminders.get(0).getId(), startBrodcastIntent, 0);
 
@@ -66,7 +68,8 @@ public class StartService extends Service {
         Log.d(TAG, "onCreate: ");
 
     }
-//https://www.youtube.com/watch?v=ocm8sg8eTpM
+
+    //https://www.youtube.com/watch?v=ocm8sg8eTpM
     void sendNotif(int id) {
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this);
@@ -75,7 +78,7 @@ public class StartService extends Service {
         builder.setContentText("Hello Oleg");
         builder.setTicker("New Message Alert!");
         builder.setSmallIcon(R.mipmap.ic_launcher);
-        builder.addAction(createMessage());
+       // builder.addAction(createMessage());
         builder.setPriority(1);
         Intent resultIntent = new Intent(this, StartActivity.class);
         Notification notif = builder.build();
@@ -92,6 +95,16 @@ public class StartService extends Service {
         builder.setContentIntent(resultPendingIntent);
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(id, builder.build());
+        final Timer time = new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                Log.d(TAG, "onCreate: set");
+                time.cancel();
+                onDestroy();
+            }
+        };
+        time.scheduleAtFixedRate(task, 10000, 5000);
 
     }
 
@@ -99,21 +112,24 @@ public class StartService extends Service {
     public void onDestroy() {
         Log.d(TAG, "onDestroy: ");
         super.onDestroy();
-        r.stop();
+        if (r != null) {
+            r.stop();
+        }
     }
 
     private NotificationCompat.Action createMessage() {
 
-      //  String date = new SimpleDateFormat(ProgectConstans.DATE_FORMAT).format(today);
-      //  String message = BaseApplication.sPref.getString("key", "no message");
+        //  String date = new SimpleDateFormat(ProgectConstans.DATE_FORMAT).format(today);
+        //  String message = BaseApplication.sPref.getString("key", "no message");
       /*  List<Reminder> reminders = SaveLoadReminders.searchBy(date,ProgectConstans.TEST_STRING);
         Log.d(TAG, "createMessage: "+date+"  "+reminders.get(0));*/
         return new NotificationCompat.Action(R.mipmap.ic_launcher, reminders.get(0).getReminder(), pIntent1);
     }
-    private void setReminders(){
+
+    private void setReminders() {
         String date = new SimpleDateFormat(ProgectConstans.DATE_FORMAT).format(today);
-        reminders = SaveLoadReminders.searchBy(date,ProgectConstans.TEST_STRING);
-        Log.d(TAG, "notificationId: "+reminders.size());
+        reminders = SaveLoadReminders.searchBy(date, ProgectConstans.TEST_STRING);
+        Log.d(TAG, "notificationId: " + reminders.size());
 
     }
 }

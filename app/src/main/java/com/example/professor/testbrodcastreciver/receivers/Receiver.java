@@ -1,10 +1,12 @@
 package com.example.professor.testbrodcastreciver.receivers;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -24,6 +26,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.Executor;
 
 public class Receiver extends BroadcastReceiver {
     public static final String TAG = Receiver.class.getSimpleName();
@@ -36,6 +41,7 @@ public class Receiver extends BroadcastReceiver {
     private Calendar cal;
     private Date today;
     private Ringtone r;
+    private MediaPlayer player;
     @Override
     public void onReceive(Context context, Intent intent) {
         con = context;
@@ -49,7 +55,7 @@ public class Receiver extends BroadcastReceiver {
         context.stopService(new Intent(context, StartService.class));
         manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
       //  manager.cancel(Integer.valueOf(intent.getIntExtra("hello",0)));
-      //  sendNotif(intent.getIntExtra("test",0));
+        sendNotif(intent.getIntExtra("test",0));
 
     }
 
@@ -73,13 +79,24 @@ public class Receiver extends BroadcastReceiver {
         builder.setSound(uri);
        // builder.addAction(createMessage());
         builder.setPriority(1);
+        builder.setDefaults(Notification.DEFAULT_VIBRATE);
         builder.setSound(uri);
+        r = RingtoneManager.getRingtone(con, uri);
 
         Intent resultIntent = new Intent(con, StartActivity.class);
+        final Timer time = new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                Log.d(TAG, "onCreate: set");
+                r.stop();
+                time.cancel();
+            }
+        };
+        time.scheduleAtFixedRate(task,1000,5000);
 
-        r = RingtoneManager.getRingtone(con, uri);
-      //  r.play();
-
+        r.play();
+       // Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(con);
         stackBuilder.addParentStack(StartActivity.class);
 
